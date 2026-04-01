@@ -98,7 +98,7 @@ export default function DialogVerifyOTP({ openDialog, setOpenDialog, email, rese
 
     return (
         <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-            <DialogContent className="sm:max-w-md pt-8 pb-6 md:pt-10 md:pb-8 px-4 md:px-8 gap-0">
+            <DialogContent className="sm:max-w-md pt-8 pb-4 md:pt-10 gap-0">
                 <DialogHeader className="space-y-2">
                     <div className="flex justify-center">
                         <LogoTheme className="w-16 h-auto" />
@@ -133,12 +133,8 @@ export default function DialogVerifyOTP({ openDialog, setOpenDialog, email, rese
                         </div>
                     </InputOTP>
 
-                    <div className="flex flex-col items-center gap-2">
-                        {isMobile ? (
-                            <p className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
-                                Gửi lại mã mới sau <span className="text-foreground font-bold tabular-nums">60 giây</span>
-                            </p>
-                        ) : (
+                    <div className="flex flex-col items-center gap-2 mb-2">
+                        {!isMobile && (
                             timeLeft > 0 ? (
                                 <p className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
                                     Gửi lại mã mới sau <span className="text-foreground font-bold tabular-nums">{timeLeft} giây</span>
@@ -163,7 +159,7 @@ export default function DialogVerifyOTP({ openDialog, setOpenDialog, email, rese
                     </div>
                 </div>
 
-                <DialogFooter className="sm:justify-center">
+                <DialogFooter className="p-2" >
                     <Button className="w-full h-10 transition-all" onClick={handleVerify} disabled={loadingVerify || otp.length < 6}>
                         {loadingVerify ? <span className="flex items-center gap-3"><Loader2 className="w-4 h-4 animate-spin" /> Đang xác thực tài khoản</span> : "Xác nhận tài khoản"}
                     </Button>
