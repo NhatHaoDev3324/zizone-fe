@@ -20,6 +20,7 @@ import { PATH } from "@/config/path";
 import { Minus, RefreshCcw, Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
 import LogoTheme from "./LogoTheme";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface DialogVerifyOTPProps {
     openDialog: boolean;
@@ -35,6 +36,8 @@ export default function DialogVerifyOTP({ openDialog, setOpenDialog, email, rese
     const [timeLeft, setTimeLeft] = useState(60);
     const [otp, setOtp] = useState<string>('');
     const router = useRouter();
+
+    const isMobile = useIsMobile();
 
     const verifyOtpAction = async () => {
         if (type === "register") {
@@ -131,22 +134,29 @@ export default function DialogVerifyOTP({ openDialog, setOpenDialog, email, rese
                     </InputOTP>
 
                     <div className="flex flex-col items-center gap-2">
-                        {timeLeft > 0 ? (
+                        {isMobile ? (
                             <p className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
-                                Gửi lại mã mới sau <span className="text-foreground font-bold tabular-nums">{timeLeft} giây</span>
+                                Gửi lại mã mới sau <span className="text-foreground font-bold tabular-nums">60 giây</span>
                             </p>
                         ) : (
-                            <button
-                                onClick={() => {
-                                    setTimeLeft(60)
-                                    resendOtp()
-                                }}
-                                className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5"
-                            >
-                                <RefreshCcw className="w-3.5 h-3.5" />
-                                Gửi lại mã ngay
-                            </button>
+                            timeLeft > 0 ? (
+                                <p className="text-sm text-muted-foreground flex items-center gap-1.5 font-medium">
+                                    Gửi lại mã mới sau <span className="text-foreground font-bold tabular-nums">{timeLeft} giây</span>
+                                </p>
+                            ) : (
+                                <button
+                                    onClick={() => {
+                                        setTimeLeft(60)
+                                        resendOtp()
+                                    }}
+                                    className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-1.5"
+                                >
+                                    <RefreshCcw className="w-3.5 h-3.5" />
+                                    Gửi lại mã ngay
+                                </button>
+                            )
                         )}
+
                         <p className="text-xs text-muted-foreground italic">
                             * Mã OTP có hiệu lực trong vòng 5 phút
                         </p>
