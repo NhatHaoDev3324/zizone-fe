@@ -7,10 +7,11 @@ type path = {
     VERIFY_EMAIL: string,
 
     HOME: string,
-    DASHBOARD: string,
-    PROFILE: string,
-    SETTINGS: string,
-    LOGOUT: string,
+    TRANSLATE: string,
+    NOTEBOOK: string,
+    COMMUNITY: string,
+    ABOUT: string,
+    CONTACT: string,
 }
 
 export const PATH: path = {
@@ -22,8 +23,9 @@ export const PATH: path = {
     VERIFY_EMAIL: "/verify-email",
 
     HOME: "/",
-    DASHBOARD: "/dashboard",
-    PROFILE: "/profile",
-    SETTINGS: "/settings",
-    LOGOUT: "/logout",
+    TRANSLATE: "/translate",
+    NOTEBOOK: "/notebook",
+    COMMUNITY: "/community",
+    ABOUT: "/about",
+    CONTACT: "/contact",
 }
