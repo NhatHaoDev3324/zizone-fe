@@ -16,11 +16,10 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
-import Image from "next/image";
 import { PATH } from "@/config/path";
 import { Minus, RefreshCcw, Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
+import LogoTheme from "./LogoTheme";
 
 interface DialogVerifyOTPProps {
     openDialog: boolean;
@@ -35,7 +34,6 @@ export default function DialogVerifyOTP({ openDialog, setOpenDialog, email, rese
     const [loadingVerify, setLoadingVerify] = useState<boolean>(false);
     const [timeLeft, setTimeLeft] = useState(60);
     const [otp, setOtp] = useState<string>('');
-    const { theme } = useTheme();
     const router = useRouter();
 
     const verifyOtpAction = async () => {
@@ -95,18 +93,12 @@ export default function DialogVerifyOTP({ openDialog, setOpenDialog, email, rese
         return () => clearInterval(timer);
     }, [openDialog]);
 
-    const Logo = () => {
-        if (theme === "light") {
-            return <Image src={`/logo/logo-dark.svg`} alt={"Logo"} width={240} height={64} style={{ width: '64px', height: 'auto' }} />
-        }
-        return <Image src={`/logo/logo-light.svg`} alt={"Logo"} width={240} height={64} style={{ width: '64px', height: 'auto' }} />
-    }
     return (
         <Dialog open={openDialog} onOpenChange={setOpenDialog}>
             <DialogContent className="sm:max-w-md pt-8 pb-6 md:pt-10 md:pb-8 px-4 md:px-8 gap-0">
                 <DialogHeader className="space-y-2">
                     <div className="flex justify-center">
-                        <Logo />
+                        <LogoTheme className="w-16 h-auto" />
                     </div>
                     <div className="space-y-1 text-center">
                         <DialogTitle className="text-xl font-bold tracking-tight">Xác thực tài khoản</DialogTitle>
