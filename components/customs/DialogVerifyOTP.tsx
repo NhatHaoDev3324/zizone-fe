@@ -98,7 +98,11 @@ export default function DialogVerifyOTP({ openDialog, setOpenDialog, email, rese
 
     return (
         <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-            <DialogContent className="sm:max-w-md pt-8 pb-4 md:pt-10 gap-0">
+            <DialogContent 
+                className="sm:max-w-md pt-8 pb-4 md:pt-10 gap-0"
+                onPointerDownOutside={(e) => e.preventDefault()}
+                onEscapeKeyDown={(e) => e.preventDefault()}
+            >
                 <DialogHeader className="space-y-2">
                     <div className="flex justify-center">
                         <LogoTheme className="w-16 h-auto" />
