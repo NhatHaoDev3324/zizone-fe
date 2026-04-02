@@ -49,7 +49,7 @@ const Header = () => {
     const { theme, setTheme } = useTheme();
     const router = useRouter();
     const pathname = usePathname();
-    const { userID, userName, email, avatar, isLoading, logout, role } = useAuthStore();
+    const { userID, userName, email, avatar, isLoading, role } = useAuthStore();
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [openDialogLogout, setOpenDialogLogout] = useState(false);
 
@@ -99,21 +99,26 @@ const Header = () => {
                                         <span className="text-sm text-muted-foreground">{email}</span>
                                     </div>
                                 </div>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuLabel>Quản trị</DropdownMenuLabel>
-                                <DropdownMenuGroup>
-                                    {role === "admin" && (
-                                        <Link href={PATH.ADMIN}>
-                                            <DropdownMenuItem>
-                                                Quản trị
-                                                <DropdownMenuShortcut><Settings className="size-4" /></DropdownMenuShortcut>
-                                            </DropdownMenuItem>
-                                        </Link>
-                                    )}
-                                </DropdownMenuGroup>
+
+
+                                {role === "admin" && (
+                                    <>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuLabel>Hệ Thống</DropdownMenuLabel>
+                                        <DropdownMenuGroup>
+                                            <Link href={PATH.ADMIN}>
+                                                <DropdownMenuItem>
+                                                    Quản Lý Hệ Thống
+                                                    <DropdownMenuShortcut><Settings className="size-4" /></DropdownMenuShortcut>
+                                                </DropdownMenuItem>
+                                            </Link>
+                                        </DropdownMenuGroup>
+                                    </>
+                                )}
+
 
                                 <DropdownMenuSeparator />
-                                <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
+                                <DropdownMenuLabel>Tài khoản Của Tôi</DropdownMenuLabel>
                                 <DropdownMenuGroup>
                                     <Link href={"/"}>
                                         <DropdownMenuItem>
