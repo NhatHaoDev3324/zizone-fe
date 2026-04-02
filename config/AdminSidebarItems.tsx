@@ -1,101 +1,87 @@
-import { TerminalSquareIcon, BotIcon, BookOpenIcon, Settings2Icon, LogOut } from "lucide-react"
+import { BookOpenIcon, LayoutDashboardIcon, UserIcon, Users, Settings } from "lucide-react"
+import { PATH } from "./path"
 
 export const AdminSidebarItems = [
     {
-        title: "Playground",
-        url: "#",
+        title: "Dashboard",
+        url: PATH.ADMIN_DASHBOARD,
         icon: (
-            <TerminalSquareIcon />
+            <LayoutDashboardIcon />
         ),
-        isActive: true,
-        items: [
-            {
-                title: "History",
-                url: "#",
-            },
-            {
-                title: "Starred",
-                url: "#",
-            },
-            {
-                title: "Settings",
-                url: "#",
-            },
-        ],
     },
     {
-        title: "Models",
-        url: "#",
+        title: "Quản lý hồ sơ cá nhân",
+        url: PATH.ADMIN_PROFILE_MANAGEMENT,
         icon: (
-            <BotIcon />
+            <UserIcon />
         ),
-        isActive: true,
-
-        items: [
-            {
-                title: "Genesis",
-                url: "#",
-            },
-            {
-                title: "Explorer",
-                url: "#",
-            },
-            {
-                title: "Quantum",
-                url: "#",
-            },
-        ],
     },
     {
-        title: "Documentation",
-        url: "#",
+        title: "Quản lý từ vựng",
+        url: PATH.ADMIN_WORD_MANAGEMENT,
         icon: (
             <BookOpenIcon />
         ),
         isActive: true,
-
         items: [
             {
-                title: "Introduction",
-                url: "#",
+                title: "Danh sách từ vựng",
+                url: PATH.ADMIN_WORD_MANAGEMENT_LIST,
             },
             {
-                title: "Get Started",
-                url: "#",
+                title: "Tạo từ vựng",
+                url: PATH.ADMIN_WORD_MANAGEMENT_CREATE,
             },
             {
-                title: "Tutorials",
-                url: "#",
+                title: "Danh sách từ đã xóa",
+                url: PATH.ADMIN_WORD_MANAGEMENT_DELETED,
             },
-            {
-                title: "Changelog",
-                url: "#",
-            },
+
         ],
     },
     {
-        title: "Settings",
-        url: "#",
+        title: "Quản lý người dùng",
+        url: PATH.ADMIN_USER_MANAGEMENT,
         icon: (
-            <Settings2Icon />
+            <Users />
+        ),
+        isActive: true,
+        items: [
+            {
+                title: "Danh sách người dùng",
+                url: PATH.ADMIN_USER_MANAGEMENT_LIST,
+            },
+            {
+                title: "Tạo tài khoản",
+                url: PATH.ADMIN_USER_MANAGEMENT_CREATE,
+            },
+
+            {
+                title: "Danh sách người dùng đã xóa",
+                url: PATH.ADMIN_USER_MANAGEMENT_DELETED,
+            },
+
+        ],
+    },
+    {
+        title: "Cấu hình hệ thống",
+        url: PATH.ADMIN_SYSTEM_CONFIGURATION,
+        icon: (
+            <Settings />
         ),
         isActive: true,
 
         items: [
             {
-                title: "General",
+                title: "Hệ thống",
                 url: "#",
             },
             {
-                title: "Team",
+                title: "Thanh toán",
                 url: "#",
             },
             {
-                title: "Billing",
-                url: "#",
-            },
-            {
-                title: "Limits",
+                title: "Giới hạn",
                 url: "#",
             },
         ],

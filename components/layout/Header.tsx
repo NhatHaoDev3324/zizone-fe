@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
-import { Sun, Moon, ChevronDown, LogOut, User, Activity, LifeBuoy, CircleQuestionMark, Loader2, Heart } from "lucide-react";
+import { Sun, Moon, ChevronDown, LogOut, User, Activity, LifeBuoy, CircleQuestionMark, Loader2, Heart, Settings } from "lucide-react";
 import { PATH } from "@/config/path";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
@@ -20,6 +20,8 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import LogoTheme from "../customs/LogoTheme";
+import AlertDialogLogout from "../customs/AlertDialogLogout";
+
 const navItem = [
     {
         label: "Trang Chủ",
@@ -41,18 +43,15 @@ const navItem = [
         label: "Giới Thiệu",
         href: PATH.ABOUT,
     },
-    {
-        label: "Liên Hệ",
-        href: PATH.CONTACT,
-    },
 ]
 
 const Header = () => {
     const { theme, setTheme } = useTheme();
     const router = useRouter();
     const pathname = usePathname();
-    const { userID, userName, email, avatar, isLoading, logout } = useAuthStore();
+    const { userID, userName, email, avatar, isLoading, logout, role } = useAuthStore();
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [openDialogLogout, setOpenDialogLogout] = useState(false);
 
     return (
         <div className="absolute top-4 right-1/2 translate-x-1/2 z-10 w-full max-w-7xl">
@@ -101,6 +100,19 @@ const Header = () => {
                                     </div>
                                 </div>
                                 <DropdownMenuSeparator />
+                                <DropdownMenuLabel>Quản trị</DropdownMenuLabel>
+                                <DropdownMenuGroup>
+                                    {role === "admin" && (
+                                        <Link href={PATH.ADMIN}>
+                                            <DropdownMenuItem>
+                                                Quản trị
+                                                <DropdownMenuShortcut><Settings className="size-4" /></DropdownMenuShortcut>
+                                            </DropdownMenuItem>
+                                        </Link>
+                                    )}
+                                </DropdownMenuGroup>
+
+                                <DropdownMenuSeparator />
                                 <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
                                 <DropdownMenuGroup>
                                     <Link href={"/"}>
@@ -130,7 +142,7 @@ const Header = () => {
                                     </Link>
 
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem className={"text-red-500 cursor-pointer"} onClick={() => logout()}>
+                                    <DropdownMenuItem className={"text-red-500 cursor-pointer"} onClick={() => setOpenDialogLogout(true)}>
                                         Đăng xuất
                                         <DropdownMenuShortcut><LogOut className="text-red-500 size-4" /></DropdownMenuShortcut>
                                     </DropdownMenuItem>
@@ -145,6 +157,7 @@ const Header = () => {
                     )}
                 </div>
             </div>
+            <AlertDialogLogout open={openDialogLogout} setOpen={setOpenDialogLogout} />
         </div>
     );
 };

@@ -22,9 +22,52 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { AdminSidebarItems } from "@/config/AdminSidebarItems"
 import LogoTheme from "@/components/customs/LogoTheme"
 import AlertDialogLogout from "@/components/customs/AlertDialogLogout";
+import { useAuthStore } from "@/store/authStore"
+import { PATH } from "@/config/path"
+import { redirect, usePathname } from "next/navigation"
+import { getProfile } from "@/api/auth"
+import { UserType } from "@/@types/userType"
+import Link from "next/link"
 
 export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const [openDialog, setOpenDialog] = React.useState(false);
+    const { setUserID, setEmail, setAvatar, setUserName, logout, setIsLoading, role, avatar, email, userName } = useAuthStore();
+    const hasFetched = React.useRef(false);
+    const pathname = usePathname();
+
+    if (role !== "admin") {
+        redirect(PATH.HOME);
+    }
+
+    React.useEffect(() => {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+            logout();
+            return;
+        }
+
+        if (hasFetched.current) return;
+        hasFetched.current = true;
+
+        const fetchProfile = async () => {
+            setIsLoading(true);
+            try {
+                const res: UserType = await getProfile();
+                setUserID(res.id);
+                setEmail(res.email);
+                setAvatar(res.avatar);
+                setUserName(res.full_name);
+            } catch {
+                logout();
+                return;
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchProfile();
+    }, [setUserID, setEmail, setAvatar, setUserName, logout, setIsLoading]);
+
     return (
         <>
             <Sidebar variant="inset" {...props}>
@@ -32,13 +75,13 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                     <SidebarMenu>
                         <SidebarMenuItem>
                             <SidebarMenuButton size="lg" asChild>
-                                <a href="#">
+                                <Link href={PATH.ADMIN_DASHBOARD}>
                                     <LogoTheme className="size-8" width={32} height={32} />
                                     <div className="grid flex-1 text-left text-sm leading-tight">
                                         <span className="truncate font-medium">Zizone</span>
-                                        <span className="truncate text-xs">Học tiếng Trung hiệu quả</span>
+                                        <span className="truncate text-xs">Quản trị hệ thống</span>
                                     </div>
-                                </a>
+                                </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     </SidebarMenu>
@@ -48,13 +91,13 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                         <SidebarGroupLabel>Platform</SidebarGroupLabel>
                         <SidebarMenu>
                             {AdminSidebarItems.map((item) => (
-                                <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
+                                <Collapsible key={item.title} asChild defaultOpen={item.isActive || item.items?.some(subItem => pathname === subItem.url)}>
                                     <SidebarMenuItem>
-                                        <SidebarMenuButton asChild tooltip={item.title}>
-                                            <a href={item.url}>
+                                        <SidebarMenuButton asChild tooltip={item.title} isActive={pathname === item.url}>
+                                            <Link href={item.url}>
                                                 {item.icon}
                                                 <span>{item.title}</span>
-                                            </a>
+                                            </Link>
                                         </SidebarMenuButton>
                                         {item.items?.length ? (
                                             <>
@@ -69,10 +112,10 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                                                     <SidebarMenuSub>
                                                         {item.items?.map((subItem) => (
                                                             <SidebarMenuSubItem key={subItem.title}>
-                                                                <SidebarMenuSubButton asChild>
-                                                                    <a href={subItem.url}>
+                                                                <SidebarMenuSubButton asChild isActive={pathname === subItem.url}>
+                                                                    <Link href={subItem.url}>
                                                                         <span>{subItem.title}</span>
-                                                                    </a>
+                                                                    </Link>
                                                                 </SidebarMenuSubButton>
                                                             </SidebarMenuSubItem>
                                                         ))}
@@ -101,16 +144,16 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                         className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                     >
                         <Avatar className="h-8 w-8 rounded-lg">
-                            <AvatarImage src={"/images/noAvata.png"} alt={"Nguyễn Nhật Hào"} />
+                            <AvatarImage src={avatar} alt={userName} />
                         </Avatar>
                         <div className="grid flex-1 text-left text-sm leading-tight">
-                            <span className="truncate font-medium">Nguyễn Nhật Hào</span>
-                            <span className="truncate text-xs">nguyennhathao.cm2k4@gmail.com</span>
+                            <span className="truncate font-medium">{userName}</span>
+                            <span className="truncate text-xs">{email}</span>
                         </div>
                     </SidebarMenuButton>
                 </SidebarFooter>
             </Sidebar>
-            <AlertDialogLogout openDialog={openDialog} setOpenDialog={setOpenDialog} />
+            <AlertDialogLogout open={openDialog} setOpen={setOpenDialog} />
         </>
     )
 }

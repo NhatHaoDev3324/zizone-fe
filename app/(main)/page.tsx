@@ -13,7 +13,6 @@ export default function Home() {
 
     const token = localStorage.getItem("accessToken");
 
-
     useEffect(() => {
         if (!token) {
             logout();

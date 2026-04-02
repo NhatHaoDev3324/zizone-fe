@@ -11,7 +11,24 @@ type path = {
     NOTEBOOK: string,
     COMMUNITY: string,
     ABOUT: string,
-    CONTACT: string,
+
+    //Admin
+    ADMIN: string,
+    ADMIN_DASHBOARD: string,
+
+    ADMIN_WORD_MANAGEMENT: string,
+    ADMIN_WORD_MANAGEMENT_CREATE: string,
+    ADMIN_WORD_MANAGEMENT_LIST: string,
+    ADMIN_WORD_MANAGEMENT_DELETED: string,
+
+    ADMIN_PROFILE_MANAGEMENT: string,
+
+    ADMIN_USER_MANAGEMENT: string,
+    ADMIN_USER_MANAGEMENT_CREATE: string,
+    ADMIN_USER_MANAGEMENT_LIST: string,
+    ADMIN_USER_MANAGEMENT_DELETED: string,
+
+    ADMIN_SYSTEM_CONFIGURATION: string,
 }
 
 export const PATH: path = {
@@ -27,5 +44,21 @@ export const PATH: path = {
     NOTEBOOK: "/notebook",
     COMMUNITY: "/community",
     ABOUT: "/about",
-    CONTACT: "/contact",
+
+    ADMIN: "/admin",
+    ADMIN_DASHBOARD: "/admin/dashboard",
+
+    ADMIN_WORD_MANAGEMENT: "/admin/word_management",
+    ADMIN_WORD_MANAGEMENT_CREATE: "/admin/word_management/create",
+    ADMIN_WORD_MANAGEMENT_LIST: "/admin/word_management/list",
+    ADMIN_WORD_MANAGEMENT_DELETED: "/admin/word_management/deleted",
+
+    ADMIN_PROFILE_MANAGEMENT: "/admin/profile_management",
+
+    ADMIN_USER_MANAGEMENT: "/admin/user_management",
+    ADMIN_USER_MANAGEMENT_CREATE: "/admin/user_management/create",
+    ADMIN_USER_MANAGEMENT_LIST: "/admin/user_management/list",
+    ADMIN_USER_MANAGEMENT_DELETED: "/admin/user_management/deleted",
+
+    ADMIN_SYSTEM_CONFIGURATION: "/admin/system_configuration",
 }

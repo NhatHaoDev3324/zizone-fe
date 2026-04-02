@@ -13,25 +13,25 @@ import { useRouter } from "next/navigation";
 import { PATH } from "@/config/path";
 
 interface AlertDialogLogoutProps {
-    openDialog: boolean;
-    setOpenDialog: (open: boolean) => void;
+    open: boolean;
+    setOpen: (open: boolean) => void;
 }
 
-const AlertDialogLogout = ({ openDialog, setOpenDialog }: AlertDialogLogoutProps) => {
+const AlertDialogLogout = ({ open, setOpen }: AlertDialogLogoutProps) => {
     const { logout } = useAuthStore();
     const router = useRouter();
 
     const handleLogout = () => {
-        setOpenDialog(false);
-        router.push(PATH.SIGN_IN);
+        setOpen(false);
+        router.push(PATH.HOME);
         logout();
     };
 
     return (
-        <AlertDialog open={openDialog} onOpenChange={setOpenDialog}>
-            <AlertDialogContent>
+        <AlertDialog open={open} onOpenChange={setOpen}>
+            <AlertDialogContent >
                 <AlertDialogHeader className="text-left">
-                    <AlertDialogTitle>Bạn có chắc chắn muốn đăng xuất?</AlertDialogTitle>
+                    <AlertDialogTitle >Bạn có chắc chắn muốn đăng xuất?</AlertDialogTitle>
                     <AlertDialogDescription>
                         Hành động này không thể hoàn tác. Bạn sẽ bị đăng xuất khỏi hệ thống Zizone.
                     </AlertDialogDescription>
