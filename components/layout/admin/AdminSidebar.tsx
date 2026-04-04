@@ -25,48 +25,20 @@ import AlertDialogLogout from "@/components/customs/AlertDialogLogout";
 import { useAuthStore } from "@/store/authStore"
 import { PATH } from "@/config/path"
 import { redirect, usePathname } from "next/navigation"
-import { getProfile } from "@/api/auth"
-import { UserType } from "@/@types/userType"
 import Link from "next/link"
+import { toast } from "sonner"
 
 export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const [openDialog, setOpenDialog] = React.useState(false);
-    const { setUserID, setEmail, setAvatar, setUserName, logout, setIsLoading, role, avatar, email, userName } = useAuthStore();
-    const hasFetched = React.useRef(false);
+    const { role, avatar, email, userName, isLoading } = useAuthStore();
     const pathname = usePathname();
 
-    if (role !== "admin") {
-        redirect(PATH.HOME);
-    }
-
     React.useEffect(() => {
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            logout();
-            return;
+        if (!isLoading && role !== "admin") {
+            toast.error("Bạn không có quyền truy cập vào trang này");
+            redirect(PATH.HOME);
         }
-
-        if (hasFetched.current) return;
-        hasFetched.current = true;
-
-        const fetchProfile = async () => {
-            setIsLoading(true);
-            try {
-                const res: UserType = await getProfile();
-                setUserID(res.id);
-                setEmail(res.email);
-                setAvatar(res.avatar);
-                setUserName(res.full_name);
-            } catch {
-                logout();
-                return;
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchProfile();
-    }, [setUserID, setEmail, setAvatar, setUserName, logout, setIsLoading]);
+    }, [role, isLoading]);
 
     return (
         <>
@@ -88,7 +60,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                 </SidebarHeader>
                 <SidebarContent>
                     <SidebarGroup>
-                        <SidebarGroupLabel>Platform</SidebarGroupLabel>
+                        <SidebarGroupLabel>Điều Hướng</SidebarGroupLabel>
                         <SidebarMenu>
                             {AdminSidebarItems.map((item) => (
                                 <Collapsible key={item.title} asChild defaultOpen={item.isActive || item.items?.some(subItem => pathname === subItem.url)}>
@@ -144,8 +116,9 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                         className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                     >
                         <Avatar className="h-8 w-8 rounded-lg">
-                            <AvatarImage src={avatar} alt={userName} />
+                            <AvatarImage src={avatar || "/images/noAvata.png"} alt={userName} />
                         </Avatar>
+
                         <div className="grid flex-1 text-left text-sm leading-tight">
                             <span className="truncate font-medium">{userName}</span>
                             <span className="truncate text-xs">{email}</span>

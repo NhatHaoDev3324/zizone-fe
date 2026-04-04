@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import MountProvider from "@/provider/MountProvider";
 import { ThemeProvider } from "@/provider/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import AuthProvider from "@/provider/AuthProvider";
 
 
 const beVietnamPro = Be_Vietnam_Pro({
@@ -58,9 +59,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                     disableTransitionOnChange
                 >
                     <MountProvider>
-                        <TooltipProvider>
-                            {children}
-                        </TooltipProvider>
+                        <AuthProvider>
+                            <TooltipProvider>
+                                {children}
+                            </TooltipProvider>
+                        </AuthProvider>
                         <Toaster />
                     </MountProvider>
                 </ThemeProvider>

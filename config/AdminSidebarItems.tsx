@@ -1,7 +1,14 @@
-import { BookOpenIcon, LayoutDashboardIcon, UserIcon, Users, Settings } from "lucide-react"
+import { BookOpenIcon, LayoutDashboardIcon, UserIcon, Users, Settings, Home } from "lucide-react"
 import { PATH } from "./path"
 
 export const AdminSidebarItems = [
+    {
+        title: "Trang chủ",
+        url: PATH.HOME,
+        icon: (
+            <Home />
+        ),
+    },
     {
         title: "Dashboard",
         url: PATH.ADMIN_DASHBOARD,

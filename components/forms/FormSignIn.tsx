@@ -12,6 +12,7 @@ import { loginByEmail, registerByGoogle } from "@/api/auth";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import LogoTheme from "../customs/LogoTheme";
+import { useAuthStore } from "@/store/authStore";
 
 interface SignInError {
     email?: string;
@@ -27,6 +28,7 @@ export default function FormSignIn() {
     const [errors, setErrors] = useState<SignInError>({});
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { fetchProfile } = useAuthStore();
     const hasCalledApi = useRef(false);
 
     async function handleSignIn() {
@@ -58,6 +60,8 @@ export default function FormSignIn() {
             if (res.success) {
                 const token = res.token;
                 localStorage.setItem('accessToken', token);
+
+                await fetchProfile();
 
                 toast.success("Đăng nhập thành công!");
                 router.replace(PATH.HOME);
@@ -107,6 +111,9 @@ export default function FormSignIn() {
                 const res = await registerByGoogle(code);
                 if (res.success) {
                     localStorage.setItem('accessToken', res.token);
+
+                    await fetchProfile();
+
                     toast.success("Đăng nhập bằng Google thành công!");
                     router.push(PATH.HOME);
                 } else {
@@ -125,7 +132,7 @@ export default function FormSignIn() {
         };
 
         handleCallback();
-    }, [searchParams, router]);
+    }, [searchParams, router, fetchProfile]);
 
     return (
         <div className={`flex flex-col gap-4 min-w-xs md:min-w-sm`}>

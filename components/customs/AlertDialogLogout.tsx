@@ -23,8 +23,8 @@ const AlertDialogLogout = ({ open, setOpen }: AlertDialogLogoutProps) => {
 
     const handleLogout = () => {
         setOpen(false);
-        router.push(PATH.HOME);
         logout();
+        router.push(PATH.HOME);
     };
 
     return (

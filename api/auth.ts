@@ -36,7 +36,7 @@ export const verifyOtp = async (email: string, otp: string) => {
 
 export const getProfile = async () => {
     const response = await api.get(`/api/${version}/auth/profile`);
-    return response.data.data;
+    return response.data;
 };
 
 export const forgotPassword = async (email: string) => {

@@ -47,7 +47,6 @@ const navItem = [
 
 const Header = () => {
     const { theme, setTheme } = useTheme();
-    const router = useRouter();
     const pathname = usePathname();
     const { userID, userName, email, avatar, isLoading, role } = useAuthStore();
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -61,8 +60,10 @@ const Header = () => {
                     {navItem.map((item) => {
                         const active = pathname === item.href;
                         return (
-                            <Button key={item.href} variant={active ? "outline" : "ghost"} className="rounded-full" onClick={() => router.push(item.href)}>
-                                {item.label}
+                            <Button key={item.href} variant={active ? "outline" : "ghost"} className="rounded-full" asChild>
+                                <Link href={item.href}>
+                                    {item.label}
+                                </Link>
                             </Button>
                         )
                     })}
@@ -91,7 +92,7 @@ const Header = () => {
                                     </div>
                                 </button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-fit" align="end">
+                            <DropdownMenuContent className="w-fit min-w-68" align="end">
                                 <div className="flex flex-col items-center gap-2 pt-6 pb-4 px-4">
                                     <Image src={avatar || "/images/noAvata.png"} alt={"avatar"} width={100} height={100} className="size-16 rounded-full object-cover" />
                                     <div className="flex flex-col items-center leading-tight">
@@ -156,8 +157,10 @@ const Header = () => {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     ) : (
-                        <Button variant={"outline"} className="rounded-full" onClick={() => router.push(PATH.SIGN_IN)}>
-                            Đăng nhập
+                        <Button variant={"outline"} className="rounded-full" asChild>
+                            <Link href={PATH.SIGN_IN}>
+                                Đăng nhập
+                            </Link>
                         </Button>
                     )}
                 </div>
