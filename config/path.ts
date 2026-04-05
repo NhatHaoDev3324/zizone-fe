@@ -11,6 +11,10 @@ type path = {
     NOTEBOOK: string,
     COMMUNITY: string,
     ABOUT: string,
+    SETTINGS: string,
+
+    PROFILE: string,
+    CHATBOT: string,
 
     //Admin
     ADMIN: string,
@@ -44,6 +48,10 @@ export const PATH: path = {
     NOTEBOOK: "/notebook",
     COMMUNITY: "/community",
     ABOUT: "/about",
+    SETTINGS: "/settings",
+
+    PROFILE: "/profile",
+    CHATBOT: "/chatbot",
 
     ADMIN: "/admin",
     ADMIN_DASHBOARD: "/admin/dashboard",
