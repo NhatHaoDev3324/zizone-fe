@@ -15,7 +15,7 @@ const ChatBotTrigger = () => {
     if (!isChatBotFloating || pathname === PATH.CHATBOT) return null;
 
     return (
-        <div className="fixed bottom-2 right-3 z-10">
+        <div className="fixed -bottom-2 -right-16 z-10">
             <div className="relative">
                 <Button variant={"glass"} className="rounded-full size-14 shadow-md" size={"icon"} asChild>
                     <Link href={PATH.CHATBOT}>

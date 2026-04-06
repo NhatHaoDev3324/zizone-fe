@@ -9,6 +9,8 @@ interface AuthState {
     avatar: string;
     isLoading: boolean;
     role: Role;
+    provider: string;
+    createdAt: string;
 
     setUserID: (userID: string) => void;
     setEmail: (email: string) => void;
@@ -16,6 +18,8 @@ interface AuthState {
     setAvatar: (avatar: string) => void;
     setIsLoading: (isLoading: boolean) => void;
     setRole: (role: Role) => void;
+    setProvider: (provider: string) => void;
+    setCreatedAt: (createdAt: string) => void;
 
     fetchProfile: () => Promise<void>;
     logout: () => void;
@@ -23,12 +27,14 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>((set, get) => ({
 
-    userID: "",
-    email: "",
-    userName: "",
+    userID: "Không xác định",
+    email: "Không xác định",
+    userName: "Không xác định",
     avatar: "/images/noAvata.png",
     isLoading: true,
     role: "guest",
+    provider: "Không xác định",
+    createdAt: "Không xác định",
 
     setUserID: (userID: string) => set({ userID }),
     setEmail: (email: string) => set({ email }),
@@ -36,6 +42,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     setAvatar: (avatar: string) => set({ avatar: avatar || "/images/noAvata.png" }),
     setIsLoading: (isLoading: boolean) => set({ isLoading }),
     setRole: (role: Role) => set({ role }),
+    setProvider: (provider: string) => set({ provider }),
+    setCreatedAt: (createdAt: string) => set({ createdAt }),
 
     fetchProfile: async () => {
         set({ isLoading: true });
@@ -47,10 +55,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
                 avatar: res.data.avatar || "/images/noAvata.png",
                 userName: res.data.full_name,
                 role: res.role,
+                provider: res.data.provider,
+                createdAt: res.data.created_at,
                 isLoading: false
             });
         } catch (error) {
-
             console.error("Fetch profile failed", error);
             get().logout();
         } finally {
@@ -64,8 +73,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             email: "",
             userName: "Không xác định",
             avatar: "/images/noAvata.png",
+            role: "guest",
+            provider: "",
+            createdAt: "",
             isLoading: false,
-            role: "guest"
         });
         localStorage.removeItem("accessToken");
     },

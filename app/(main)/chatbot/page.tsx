@@ -4,9 +4,11 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Send, User, Bot, Sparkles, Plus, Image as ImageIcon, Smile, MoreHorizontal, Trash, Trash2 } from "lucide-react"
+import { Send, Bot, Sparkles, Trash2, User } from "lucide-react"
+import { useAuthStore } from "@/store/authStore"
 
 const Page = () => {
+    const { avatar } = useAuthStore()
     const [messages, setMessages] = useState([
         { id: 1, role: "bot", content: "Chào bạn! Tôi là Zizone Assistant. Tôi có thể giúp gì cho bạn hôm nay?", time: "09:00" },
         { id: 2, role: "user", content: "Tôi muốn tìm hiểu về các khóa học tiếng Anh giao tiếp.", time: "09:01" },
@@ -15,7 +17,6 @@ const Page = () => {
 
     return (
         <div className="flex flex-col h-[calc(100vh-18rem)] w-full mx-auto rounded-2xl border border-border/40 bg-background/20 backdrop-blur-2xl overflow-hidden shadow-2xl relative">
-            {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-border/40 bg-background/20">
                 <div className="flex items-center gap-3">
                     <div className="relative">
@@ -45,9 +46,15 @@ const Page = () => {
                     <div key={m.id} className={`flex items-start gap-3 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
                         <Avatar className={`size-8 border ${m.role === "user" ? "border-primary/20" : "border-border/40"}`}>
                             {m.role === "user" ? (
-                                <AvatarFallback className="bg-primary/10"><User className="size-4 text-primary" /></AvatarFallback>
+                                <>
+                                    <AvatarImage src={avatar || "/images/noAvata.png"} alt="User Avatar" className="object-cover" />
+                                    <AvatarFallback className="bg-primary/10"><User className="size-4 text-primary" /></AvatarFallback>
+                                </>
                             ) : (
-                                <AvatarImage src="/icon/chatbot.png" />
+                                <>
+                                    <AvatarImage src="/icon/chatbot.png" alt="Chatbot Avatar" className="object-cover" />
+                                    <AvatarFallback className="bg-muted"><Bot className="size-4 text-slate-500" /></AvatarFallback>
+                                </>
                             )}
                         </Avatar>
                         <div className={`flex flex-col gap-1.5 max-w-[75%] ${m.role === "user" ? "items-end" : ""}`}>

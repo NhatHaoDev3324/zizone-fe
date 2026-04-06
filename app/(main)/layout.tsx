@@ -24,12 +24,12 @@ export default function MainLayout({ children }: Readonly<{ children: React.Reac
             </div>
 
 
-            <main className="absolute w-4/6 h-4/5 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 border border-border rounded-[40px]  backdrop-blur-md bg-muted/20">
+            <main className="absolute w-4/6 h-4/5 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 border border-border rounded-[40px] backdrop-blur-md bg-muted/20 flex flex-col">
+                <Nav />
                 <Header />
-                <div className="top-18 mx-4 my-2 flex min-h-[calc(100vh-18rem)] flex-col relative">
+                <div className="flex-1 mt-20 mb-4 mx-4 overflow-y-auto relative custom-scrollbar rounded-2xl">
                     {children}
                 </div>
-                <Nav />
                 <ChatBotTrigger />
             </main>
 

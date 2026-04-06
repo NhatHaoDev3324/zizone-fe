@@ -7,6 +7,7 @@ export type UserType = {
     last_name: string;
     full_name: string;
     avatar: string;
+    provider: string;
     role: Role;
     created_at: string;
     updated_at: string;

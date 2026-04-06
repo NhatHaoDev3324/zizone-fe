@@ -64,3 +64,21 @@ export const resetPassword = async (new_password: string, token: string) => {
     });
     return response.data;
 };
+
+//admin
+
+export const getAllUser = async (search?: string, page?: number, limit?: number) => {
+    const response = await api.get(`/api/${version}/admin/user/list?`, {
+        params: {
+            search,
+            page,
+            limit,
+        },
+    });
+    return response.data;
+};
+
+export const deleteUser = async (id: string) => {
+    const response = await api.delete(`/api/${version}/admin/user/delete/${id}`);
+    return response.data;
+};
