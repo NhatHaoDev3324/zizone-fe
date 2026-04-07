@@ -1,10 +1,28 @@
 "use client"
 import Image from "next/image"
 import { useAuthStore } from "@/store/authStore"
-import { Camera, Edit, Eye, Lock } from "lucide-react"
+import { Camera, CircleX, Edit, Eye, EyeOff, Loader2, Lock, X } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { formatDateTime } from "@/utils/formatTime"
+import { useRef, useState } from "react"
+
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { changePasswordSchema, ChangePasswordInput, updateProfileSchema, UpdateProfileInput } from "@/lib/validations/profile"
+import { toast } from "sonner"
+import { Button } from "@/components/ui/button"
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
+import { AxiosError } from "axios"
+import { EditAvatar, EditPassword, EditUserName } from "@/api/auth"
 
 const streakData = [
     { day: "Thứ 2", isActive: true, date: "2026-03-30" },
@@ -17,21 +35,143 @@ const streakData = [
 ]
 
 const Page = () => {
-    const { userID, avatar, userName, email, provider, createdAt } = useAuthStore()
+    const { userID, avatar, userName, email, provider, createdAt, setAvatar, setUserName } = useAuthStore()
+    const [isEditName, setIsEditName] = useState(false)
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [loading, setLoading] = useState(false)
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        reset,
+        clearErrors
+    } = useForm<ChangePasswordInput>({
+        resolver: zodResolver(changePasswordSchema),
+        mode: "onSubmit",
+        reValidateMode: "onSubmit",
+        defaultValues: {
+            oldPassword: "",
+            newPassword: "",
+            confirmPassword: ""
+        }
+    })
+
+    const [showPassword, setShowPassword] = useState({
+        oldPassword: false,
+        newPassword: false,
+        confirmPassword: false
+    })
+
+    const {
+        register: registerProfile,
+        handleSubmit: handleSubmitProfile,
+        formState: { errors: errorsProfile, isSubmitting: isSubmittingProfile },
+        setValue: setProfileValue,
+        clearErrors: clearErrorsProfile
+    } = useForm<UpdateProfileInput>({
+        resolver: zodResolver(updateProfileSchema),
+        mode: "onSubmit",
+        reValidateMode: "onSubmit",
+        defaultValues: {
+            userName: userName || ""
+        }
+    })
+
+    const handleEditPassword = async (data: ChangePasswordInput) => {
+        try {
+            const res = await EditPassword(data.oldPassword, data.newPassword);
+            if (res.success) {
+                toast.success("Thay đổi mật khẩu thành công!")
+                reset()
+            }
+        } catch (err) {
+            const error = err as AxiosError<{ message: string }>;
+            console.error(error);
+            toast.error(error.response?.data?.message, {
+                description: "Vui lòng kiểm tra và thử lại.",
+            })
+        }
+    }
+
+    const handleEditUserName = async (data: UpdateProfileInput) => {
+        try {
+            const res = await EditUserName(data.userName);
+            if (res.success) {
+                setUserName(res.data.full_name);
+            }
+            toast.success("Cập nhật tên tài khoản thành công!")
+            setIsEditName(false)
+        } catch (err) {
+            const error = err as AxiosError<{ message: string }>;
+            console.error(error);
+            toast.error(error.response?.data?.message, {
+                description: "Vui lòng kiểm tra và thử lại.",
+            })
+        }
+    }
+
+    const handleUpdateAvatar = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        setLoading(true);
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("avatar", file);
+
+        try {
+            const res = await EditAvatar(formData);
+            if (res.success) {
+                setAvatar(res.data.avatar);
+            }
+            toast.success("Cập nhật ảnh thành công!");
+        } catch (err) {
+            const error = err as AxiosError<{ message: string }>;
+            console.error(error);
+            toast.error(error.response?.data?.message, {
+                description: "Vui lòng kiểm tra và thử lại.",
+            })
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="min-h-full grid grid-cols-2 gap-2">
             <div className="col-span-1 rounded-xl flex flex-col gap-2">
                 <div className="flex items-center gap-4 bg-white p-4 rounded-xl">
                     <div className="relative">
-                        <Image src={avatar || "/images/profile.png"} loading="eager" alt="Profile" width={60} height={60} className="rounded-full" />
-                        <button className="absolute bottom-0 right-0 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                        {loading ? (
+                            <div className="relative">
+                                <div className="w-15 h-15 rounded-full bg-gray-200 animate-pulse" />
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                                </div>
+                            </div>
+                        ) : (
+                            <Image src={avatar || "/images/profile.png"} loading="eager" alt="Profile" width={60} height={60} className="rounded-full" />
+                        )}
+                        <button onClick={handleUpdateAvatar} className="absolute bottom-0 right-0 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
                             <Camera className="w-4 h-4 text-primary-foreground" />
                         </button>
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            className="hidden"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                        />
                     </div>
                     <div>
                         <div className="flex items-center gap-2">
                             <h1 className="text-xl font-bold text-black">{userName}</h1>
-                            <button className="cursor-pointer text-black">
+                            <button className="cursor-pointer text-black" onClick={() => {
+                                setProfileValue("userName", userName || "")
+                                setIsEditName(true)
+                            }}>
                                 <Edit className="w-4 h-4" />
                             </button>
                         </div>
@@ -41,46 +181,83 @@ const Page = () => {
                 <div className="flex flex-col gap-2 bg-white rounded-xl pt-2 pb-4">
                     <span className="text-black font-semibold px-4">Thay đổi mật khẩu</span>
                     <hr className="border-border" />
-                    <form action="" className="flex flex-col gap-2 px-4">
+                    <form onSubmit={handleSubmit(handleEditPassword)} className="flex flex-col gap-2 px-4">
                         <div className="relative space-y-1">
                             <Label className="text-black" htmlFor="oldPassword">Mật khẩu cũ</Label>
                             <div className="flex flex-col gap-1">
                                 <div className="relative">
-                                    <Input type="password" id="oldPassword" className="pr-10 bg-white border-slate-200 text-black focus-visible:ring-1" />
-                                    <button className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer">
-                                        <Eye className="w-4 h-4 text-muted-foreground" />
-                                    </button>
+                                    <Input
+                                        type={showPassword.oldPassword ? "text" : "password"}
+                                        id="oldPassword"
+                                        {...register("oldPassword", {
+                                            onChange: () => clearErrors("oldPassword")
+                                        })}
+                                        className="pr-10 bg-white border-slate-200 text-black focus-visible:ring-1"
+                                    />
+                                    <span className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer" onClick={() => setShowPassword({ ...showPassword, oldPassword: !showPassword.oldPassword })}>
+                                        {showPassword.oldPassword ? <Eye className="w-4 h-4 text-muted-foreground" /> : <EyeOff className="w-4 h-4 text-muted-foreground" />}
+                                    </span>
                                 </div>
-                                <p className="text-xs text-red-500">Mật khẩu cũ không chính xác</p>
+                                <span className="h-3">
+                                    {errors.oldPassword && (
+                                        <p className="text-xs text-red-500 flex items-center gap-2"><CircleX className="w-3 h-3" />{errors.oldPassword.message?.toString()}</p>
+                                    )}
+                                </span>
+
                             </div>
                         </div>
                         <div className="relative space-y-1">
                             <Label className="text-black" htmlFor="newPassword">Mật khẩu mới</Label>
                             <div className="flex flex-col gap-1">
                                 <div className="relative">
-                                    <Input type="password" id="newPassword" className="pr-10 bg-white border-slate-200 text-black focus-visible:ring-1" />
-                                    <button className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer">
-                                        <Eye className="w-4 h-4 text-muted-foreground" />
-                                    </button>
+                                    <Input
+                                        type={showPassword.newPassword ? "text" : "password"}
+                                        id="newPassword"
+                                        {...register("newPassword", {
+                                            onChange: () => clearErrors("newPassword")
+                                        })}
+                                        className="pr-10 bg-white border-slate-200 text-black focus-visible:ring-1"
+                                    />
+                                    <span className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer" onClick={() => setShowPassword({ ...showPassword, newPassword: !showPassword.newPassword })}>
+                                        {showPassword.newPassword ? <Eye className="w-4 h-4 text-muted-foreground" /> : <EyeOff className="w-4 h-4 text-muted-foreground" />}
+                                    </span>
                                 </div>
-                                <p className="text-xs text-red-500">Mật khẩu mới không chính xác</p>
+                                <span className="h-3">
+                                    {errors.newPassword && (
+                                        <p className="text-xs text-red-500 flex items-center gap-2"><CircleX className="w-3 h-3" />{errors.newPassword.message?.toString()}</p>
+                                    )}
+                                </span>
                             </div>
                         </div>
                         <div className="relative space-y-1">
                             <Label className="text-black" htmlFor="confirmPassword">Xác nhận mật khẩu</Label>
                             <div className="flex flex-col gap-1">
                                 <div className="relative">
-                                    <Input type="password" id="confirmPassword" className="pr-10 bg-white border-slate-200 text-black focus-visible:ring-1" />
-                                    <button className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer">
-                                        <Eye className="w-4 h-4 text-muted-foreground" />
-                                    </button>
+                                    <Input
+                                        type={showPassword.confirmPassword ? "text" : "password"}
+                                        id="confirmPassword"
+                                        {...register("confirmPassword", {
+                                            onChange: () => clearErrors("confirmPassword")
+                                        })}
+                                        className="pr-10 bg-white border-slate-200 text-black focus-visible:ring-1"
+                                    />
+                                    <span className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer" onClick={() => setShowPassword({ ...showPassword, confirmPassword: !showPassword.confirmPassword })}>
+                                        {showPassword.confirmPassword ? <Eye className="w-4 h-4 text-muted-foreground" /> : <EyeOff className="w-4 h-4 text-muted-foreground" />}
+                                    </span>
                                 </div>
-                                <p className="text-xs text-red-500">Xác nhận mật khẩu không chính xác</p>
+                                <span className="h-3">
+                                    {errors.confirmPassword && (
+                                        <p className="text-xs text-red-500 flex items-center gap-2"><CircleX className="w-3 h-3" />{errors.confirmPassword.message?.toString()}</p>
+                                    )}
+                                </span>
                             </div>
                         </div>
+                        <Button size={"lg"} variant={"secondary"} type="submit" disabled={isSubmitting} className="rounded-xl disabled:opacity-50">
+                            {isSubmitting ? "Đang xử lý..." : "Thay đổi"}
+                        </Button>
                     </form>
-                    <button type="submit" className="bg-primary text-primary-foreground px-4 py-2 rounded-xl mx-4">Thay đổi</button>
                 </div>
+
                 <div className="flex flex-col gap-4 bg-white p-4 rounded-2xl shadow-sm border border-orange-50">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
@@ -175,11 +352,11 @@ const Page = () => {
                                             <Image src={`/icon/gau.png`} alt="Icon" width={40} height={40} className="object-cover" />
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-xs font-bold text-slate-800 leading-tight">{item.title}</span>
-                                            <span className="text-[10px] text-slate-500 leading-tight mt-0.5">{item.desc}</span>
+                                            <span className="text-xs font-bold text-black leading-tight">{item.title}</span>
+                                            <span className="text-[10px] text-muted-foreground leading-tight mt-0.5">{item.desc}</span>
                                         </div>
                                     </div>
-                                    <div className="p-2 bg-white rounded-full border border-muted">
+                                    <div className="p-2 bg-white rounded-full border border-muted-foreground">
                                         <Lock className="size-4 text-muted-foreground" />
                                     </div>
                                 </div>
@@ -201,6 +378,66 @@ const Page = () => {
                     </div>
                 </div>
             </div>
+
+            <Dialog open={isEditName} onOpenChange={(open) => {
+                setIsEditName(open)
+                if (!open) clearErrorsProfile()
+            }}>
+                <DialogContent className="sm:max-w-md bg-white border-none rounded-2xl gap-0">
+                    <DialogHeader className="gap-0">
+                        <DialogTitle className="text-xl font-bold text-black flex items-center gap-2">
+                            <Edit className="w-5.5 h-5.5 text-black" />
+                            Chỉnh sửa tên tài khoản
+                        </DialogTitle>
+                        <DialogDescription className="text-sm text-muted-foreground">
+                            Nhập tên mới bạn muốn sử dụng hiển thị trên hệ thống.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleSubmitProfile(handleEditUserName)} className="space-y-2 pt-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="userName" className="text-black font-semibold">Tên tài khoản mới</Label>
+                            <Input
+                                id="userName"
+                                {...registerProfile("userName", {
+                                    onChange: () => clearErrorsProfile("userName")
+                                })}
+                                className="bg-slate-50 border-slate-200 text-black focus-visible:ring-1"
+                                placeholder="Nhập tên tài khoản..."
+                            />
+                            <span className="h-3">
+                                {errorsProfile.userName && (
+                                    <p className="text-xs text-red-500 flex items-center gap-2">
+                                        <CircleX className="w-3 h-3" />
+                                        {errorsProfile.userName.message}
+                                    </p>
+                                )}
+                            </span>
+                        </div>
+                        <DialogFooter className="flex sm:justify-between items-center gap-3">
+                            <DialogClose asChild>
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    className="flex-1"
+                                    onClick={() => {
+                                        setIsEditName(false);
+                                        clearErrorsProfile();
+                                    }}
+                                >
+                                    Hủy bỏ
+                                </Button>
+                            </DialogClose>
+                            <Button
+                                type="submit"
+                                disabled={isSubmittingProfile}
+                                className="flex-1"
+                            >
+                                {isSubmittingProfile ? "Đang lưu..." : "Cập nhật"}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

@@ -82,3 +82,27 @@ export const deleteUser = async (id: string) => {
     const response = await api.delete(`/api/${version}/admin/user/delete/${id}`);
     return response.data;
 };
+
+//edit
+
+export const EditAvatar = async (formData: FormData) => {
+    const request = await api.post(`/api/${version}/auth/edit/avatar`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+    return request.data;
+};
+
+export const EditUserName = async (full_name: string) => {
+    const request = await api.post(`/api/${version}/auth/edit/name`, {
+        full_name,
+    });
+    return request.data;
+};
+
+export const EditPassword = async (old_password: string, new_password: string) => {
+    const request = await api.post(`/api/${version}/auth/edit/password`, {
+        old_password,
+        new_password,
+    });
+    return request.data;
+};

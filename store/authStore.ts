@@ -39,7 +39,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     setUserID: (userID: string) => set({ userID }),
     setEmail: (email: string) => set({ email }),
     setUserName: (userName: string) => set({ userName }),
-    setAvatar: (avatar: string) => set({ avatar: avatar || "/images/noAvata.png" }),
+    setAvatar: (avatar: string) => set({ avatar: avatar }),
     setIsLoading: (isLoading: boolean) => set({ isLoading }),
     setRole: (role: Role) => set({ role }),
     setProvider: (provider: string) => set({ provider }),
@@ -52,9 +52,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             set({
                 userID: res.data.id,
                 email: res.data.email,
-                avatar: res.data.avatar || "/images/noAvata.png",
+                avatar: res.data.avatar,
                 userName: res.data.full_name,
-                role: res.role,
+                role: res.data.role,
                 provider: res.data.provider,
                 createdAt: res.data.created_at,
                 isLoading: false
