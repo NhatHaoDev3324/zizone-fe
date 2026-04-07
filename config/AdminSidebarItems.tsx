@@ -59,11 +59,6 @@ export const AdminSidebarItems = [
                 url: PATH.ADMIN_USER_MANAGEMENT_LIST,
             },
             {
-                title: "Tạo tài khoản",
-                url: PATH.ADMIN_USER_MANAGEMENT_CREATE,
-            },
-
-            {
                 title: "Danh sách người dùng đã xóa",
                 url: PATH.ADMIN_USER_MANAGEMENT_DELETED,
             },

@@ -28,7 +28,6 @@ type path = {
     ADMIN_PROFILE_MANAGEMENT: string,
 
     ADMIN_USER_MANAGEMENT: string,
-    ADMIN_USER_MANAGEMENT_CREATE: string,
     ADMIN_USER_MANAGEMENT_LIST: string,
     ADMIN_USER_MANAGEMENT_DELETED: string,
 
@@ -64,7 +63,6 @@ export const PATH: path = {
     ADMIN_PROFILE_MANAGEMENT: "/admin/profile_management",
 
     ADMIN_USER_MANAGEMENT: "/admin/user_management",
-    ADMIN_USER_MANAGEMENT_CREATE: "/admin/user_management/create",
     ADMIN_USER_MANAGEMENT_LIST: "/admin/user_management/list",
     ADMIN_USER_MANAGEMENT_DELETED: "/admin/user_management/deleted",
 

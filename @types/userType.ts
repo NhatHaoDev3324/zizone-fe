@@ -11,4 +11,5 @@ export type UserType = {
     role: Role;
     created_at: string;
     updated_at: string;
+    deleted_at: string;
 }

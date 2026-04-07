@@ -46,6 +46,7 @@ interface TableCustomProps<T> {
     onLimitChange: (limit: number) => void
     onSearchChange: (search: string) => void
     title?: string
+    action?: React.ReactNode
 }
 
 const TableCustom = <T extends { id: string | number }>({
@@ -59,7 +60,8 @@ const TableCustom = <T extends { id: string | number }>({
     onPageChange,
     onLimitChange,
     onSearchChange,
-    title
+    title,
+    action
 }: TableCustomProps<T>) => {
     const totalPages = Math.ceil(totalCount / limit)
 
@@ -81,6 +83,7 @@ const TableCustom = <T extends { id: string | number }>({
                         className="pl-10 h-10 rounded-full bg-slate-50 border-border focus-visible:ring-1 transition-all"
                     />
                 </div>
+                {action}
             </div>
 
             <div className="border border-border rounded-md overflow-hidden bg-background">

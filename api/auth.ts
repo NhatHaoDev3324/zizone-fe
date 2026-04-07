@@ -83,6 +83,35 @@ export const deleteUser = async (id: string) => {
     return response.data;
 };
 
+export const createUser = async (
+    full_name: string,
+    email: string,
+    role: "user" | "admin",
+) => {
+    const response = await api.post(`/api/${version}/admin/create-account`, {
+        full_name,
+        email,
+        role,
+    });
+    return response.data;
+};
+
+export const getAllDeletedUser = async (search?: string, page?: number, limit?: number) => {
+    const response = await api.get(`/api/${version}/admin/user/deleted?`, {
+        params: {
+            search,
+            page,
+            limit,
+        },
+    });
+    return response.data;
+};
+
+export const restoreUser = async (id: string) => {
+    const response = await api.post(`/api/${version}/admin/user/restore/${id}`);
+    return response.data;
+};
+
 //edit
 
 export const EditAvatar = async (formData: FormData) => {
